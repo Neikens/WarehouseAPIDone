@@ -1,0 +1,17 @@
+                                         Table "public.inventory_items"
+    Column    |            Type             | Collation | Nullable |                   Default                   
+--------------+-----------------------------+-----------+----------+---------------------------------------------
+ id           | bigint                      |           | not null | nextval('inventory_items_id_seq'::regclass)
+ product_id   | bigint                      |           |          | 
+ warehouse_id | bigint                      |           |          | 
+ quantity     | numeric(10,2)               |           |          | 0
+ created_at   | timestamp without time zone |           |          | CURRENT_TIMESTAMP
+ updated_at   | timestamp without time zone |           |          | CURRENT_TIMESTAMP
+Indexes:
+    "inventory_items_pkey" PRIMARY KEY, btree (id)
+    "unique_product_warehouse" UNIQUE CONSTRAINT, btree (product_id, warehouse_id)
+Foreign-key constraints:
+    "fko8csbrqxi83c133drsvv7dqc8" FOREIGN KEY (product_id) REFERENCES product(id)
+    "inventory_items_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(id)
+    "inventory_items_warehouse_id_fkey" FOREIGN KEY (warehouse_id) REFERENCES warehouses(id)
+

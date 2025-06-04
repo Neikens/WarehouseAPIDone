@@ -1,0 +1,26 @@
+2025-06-04 19:03:36 [main] INFO  com.warehouse.api.ApplicationKt - Starting ApplicationKt using Java 17.0.14 with PID 1341 (/opt/warehouse-api/build/classes/kotlin/main started by admin1 in /opt/warehouse-api)
+2025-06-04 19:03:36 [main] DEBUG com.warehouse.api.ApplicationKt - Running with Spring Boot v3.2.3, Spring v6.1.4
+2025-06-04 19:03:36 [main] INFO  com.warehouse.api.ApplicationKt - No active profile set, falling back to 1 default profile: "default"
+2025-06-04 19:03:39 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-06-04 19:03:39 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 81 ms. Found 4 JPA repository interfaces.
+2025-06-04 19:03:40 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8082 (http)
+2025-06-04 19:03:41 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-06-04 19:03:41 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.19]
+2025-06-04 19:03:41 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-06-04 19:03:41 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 3993 ms
+2025-06-04 19:03:41 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-06-04 19:03:41 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.4.4.Final
+2025-06-04 19:03:41 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-06-04 19:03:42 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-06-04 19:03:42 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-06-04 19:03:42 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@647af13d
+2025-06-04 19:03:42 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-06-04 19:03:42 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-06-04 19:02:59 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-06-04 19:02:59 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-06-04 19:03:00 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-06-04 19:03:01 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-06-04 19:03:02 [main] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 5 endpoint(s) beneath base path '/actuator'
+2025-06-04 19:03:03 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@538c823c, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@bba6542, org.springframework.security.web.context.SecurityContextHolderFilter@5cc12274, org.springframework.security.web.header.HeaderWriterFilter@8cc7489, org.springframework.web.filter.CorsFilter@14ab3e22, org.springframework.security.web.authentication.logout.LogoutFilter@6c826924, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@5cbdc23b, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@2df491be, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@3a792bf9, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@7fd4682, org.springframework.security.web.access.ExceptionTranslationFilter@2c5b2d62, org.springframework.security.web.access.intercept.AuthorizationFilter@7931cea2]
+2025-06-04 19:03:03 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8082 (http) with context path ''
+2025-06-04 19:03:03 [main] INFO  com.warehouse.api.ApplicationKt - Started ApplicationKt in -32.172 seconds (process running for 13.764)
