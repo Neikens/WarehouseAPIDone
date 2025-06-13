@@ -1,15 +1,20 @@
-package com.warehouse.api.test
+package com.warehouse.api
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
 
+/**
+ * Pamata aplikācijas tests
+ * Pārbauda aplikācijas startēšanu
+ */
 @SpringBootTest
-@ActiveProfiles("test")
-class ApplicationTests : BaseTest() {
+class ApplicationTests {
 
+    /**
+     * Vienkāršs tests, kas pārbauda aplikācijas konteksta ielādi
+     */
     @Test
     fun contextLoads() {
-        // This test will fail if the application context cannot start
+        // Tukšs tests - Spring Boot automātiski pārbauda kontekstu
     }
 }

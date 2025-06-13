@@ -56,8 +56,11 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
-    implementation("org.springdoc:springdoc-openapi-starter-common:2.3.0")
+
+    // Updated SpringDoc versions to fix Swagger UI icon display issues
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
+    implementation("org.springdoc:springdoc-openapi-starter-common:2.6.0")
+
     implementation("io.micrometer:micrometer-core")
     implementation("io.micrometer:micrometer-registry-prometheus")
 
@@ -72,6 +75,7 @@ dependencies {
     testImplementation("com.ninja-squad:springmockk:4.0.2")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
 }
 
 tasks.withType<KotlinCompile> {

@@ -1,50 +1,63 @@
-package com.warehouse.api.test
+package com.warehouse.api
 
 import com.warehouse.api.model.Product
 import com.warehouse.api.model.Warehouse
 import com.warehouse.api.model.InventoryItem
 import java.math.BigDecimal
 
+/**
+ * Test helper utilities for creating test data
+ */
 object TestHelper {
-    fun createTestProduct(
-        id: Long? = null,
-        code: String = "TEST001",
-        description: String = "Test Product",
-        barcode: String = "123456789",
-        category: String = "Test Category",
-        name: String = "Test Product Name",
-        price: BigDecimal = BigDecimal("9.99")
-    ) = Product(
-        id = id,
-        code = code,
-        description = description,
-        barcode = barcode,
-        category = category,
-        name = name,
-        price = price
-    )
 
+    /**
+     * Creates a test product with default values
+     */
+    fun createTestProduct(
+        code: String = "TEST-001",
+        name: String = "Test Product",
+        description: String = "Test Product Description",
+        category: String = "Test Category",
+        price: BigDecimal = BigDecimal("10.00")
+    ): Product {
+        return Product(
+            code = code,
+            name = name,
+            description = description,
+            category = category,
+            price = price
+        )
+    }
+
+    /**
+     * Creates a test warehouse with default values
+     */
     fun createTestWarehouse(
-        id: Long? = null,
         name: String = "Test Warehouse",
         location: String = "Test Location",
         capacity: Double = 1000.0
-    ) = Warehouse(
-        id = id,
-        name = name,
-        location = location,
-        capacity = capacity
-    )
+    ): Warehouse {
+        return Warehouse(
+            name = name,
+            location = location,
+            capacity = capacity
+        )
+    }
 
+    /**
+     * Creates a test inventory item
+     */
     fun createTestInventoryItem(
-        id: Long? = null,
-        product: Product = createTestProduct(),
-        warehouse: Warehouse = createTestWarehouse(),
-        quantity: BigDecimal = BigDecimal.TEN
-    ) = InventoryItem(
-        id = id,
-        product = product,
-        warehouse = warehouse,
-        quantity = quantity
-    )
+        product: Product,
+        warehouse: Warehouse,
+        quantity: BigDecimal = BigDecimal("100.00"),
+        minimumLevel: BigDecimal? = null
+    ): InventoryItem {
+        return InventoryItem(
+            product = product,
+            warehouse = warehouse,
+            quantity = quantity,
+            minimumLevel = minimumLevel
+        )
+    }
 }

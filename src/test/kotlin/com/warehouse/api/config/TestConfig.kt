@@ -14,12 +14,24 @@ import javax.sql.DataSource
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
 
+/**
+ * Testu konfigurācijas klase
+ * Nodrošina nepieciešamos bean'us testu izpildei
+ */
 @TestConfiguration
 class TestConfig {
 
+    /**
+     * Paroles kodētājs testiem
+     * Izmanto BCrypt algoritmu drošībai
+     */
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 
+    /**
+     * Testu lietotāju detaļu serviss
+     * Izveido atmiņā esošu admin lietotāju testiem
+     */
     @Bean
     fun userDetailsService(passwordEncoder: PasswordEncoder): UserDetailsService {
         val admin = User.builder()
@@ -31,10 +43,17 @@ class TestConfig {
         return InMemoryUserDetailsManager(admin)
     }
 
+    /**
+     * Testu drošības konfigurācija
+     * Definē piekļuves tiesības dažādiem API endpoint'iem
+     */
     @Bean
     fun testSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http {
+            // Atslēdz CSRF aizsardzību testiem
             csrf { disable() }
+
+            // Definē autorizācijas noteikumus
             authorizeRequests {
                 authorize("/api/v1/inventory/**", hasRole("ADMIN"))
                 authorize("/api/v1/products/**", hasRole("ADMIN"))
@@ -45,11 +64,17 @@ class TestConfig {
                 authorize("/swagger-ui/**", permitAll)
                 authorize(anyRequest, authenticated)
             }
+
+            // Izmanto HTTP Basic autentifikāciju
             httpBasic {}
         }
         return http.build()
     }
 
+    /**
+     * Testu datubāzes konfigurācija
+     * Izmanto H2 iegulto datubāzi testiem
+     */
     @Bean
     fun dataSource(): DataSource {
         return EmbeddedDatabaseBuilder()

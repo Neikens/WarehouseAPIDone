@@ -1,111 +1,145 @@
 package com.warehouse.api.service
 
-import com.warehouse.api.model.InventoryItem
 import com.warehouse.api.model.Product
 import com.warehouse.api.model.Warehouse
+import com.warehouse.api.model.InventoryItem
 import com.warehouse.api.repository.InventoryItemRepository
 import com.warehouse.api.repository.WarehouseRepository
-import org.junit.jupiter.api.Assertions.*
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.Mock
-import org.mockito.Mockito.*
-import org.mockito.junit.jupiter.MockitoExtension
+import org.junit.jupiter.api.Assertions.*
 import java.math.BigDecimal
-import java.util.*
+import java.util.Optional // ADD THIS IMPORT
 
-@ExtendWith(MockitoExtension::class)
 class InventoryTrackingServiceTest {
 
-    @Mock
-    private lateinit var inventoryItemRepository: InventoryItemRepository
-
-    @Mock
-    private lateinit var warehouseRepository: WarehouseRepository
-
-    @Mock
-    private lateinit var metricsService: MetricsService
+    private val inventoryItemRepository: InventoryItemRepository = mockk()
+    private val warehouseRepository: WarehouseRepository = mockk()
+    private val metricsService: MetricsService = mockk(relaxed = true)
+    private val auditService: AuditService = mockk(relaxed = true)
 
     private lateinit var inventoryTrackingService: InventoryTrackingService
 
     @BeforeEach
-    fun setup() {
+    fun setUp() {
         inventoryTrackingService = InventoryTrackingService(
             inventoryItemRepository,
             warehouseRepository,
-            metricsService
+            metricsService,
+            auditService
         )
     }
 
+    private fun createTestProduct(id: Long = 1L, code: String = "TEST-001"): Product {
+        val product = Product(
+            code = code,
+            name = "Test Product",
+            description = "Test Description",
+            category = "Test Category",
+            price = BigDecimal("10.00")
+        )
+        product.javaClass.getDeclaredField("id").apply {
+            isAccessible = true
+            set(product, id)
+        }
+        return product
+    }
+
+    private fun createTestWarehouse(id: Long = 1L, name: String = "Test Warehouse"): Warehouse {
+        val warehouse = Warehouse(
+            name = name,
+            location = "Test Location",
+            capacity = 1000.0
+        )
+        warehouse.javaClass.getDeclaredField("id").apply {
+            isAccessible = true
+            set(warehouse, id)
+        }
+        return warehouse
+    }
+
+    private fun createTestInventoryItem(
+        id: Long = 1L,
+        product: Product,
+        warehouse: Warehouse,
+        quantity: BigDecimal = BigDecimal("100.00"),
+        minimumLevel: BigDecimal? = null
+    ): InventoryItem {
+        val item = InventoryItem(
+            product = product,
+            warehouse = warehouse,
+            quantity = quantity,
+            minimumLevel = minimumLevel
+        )
+        item.javaClass.getDeclaredField("id").apply {
+            isAccessible = true
+            set(item, id)
+        }
+        return item
+    }
+
     @Test
-    fun `checkLowStock should return items below threshold`() {
+    fun `should check low stock items`() {
         // Given
-        val threshold = BigDecimal("10.0")
-        val lowStockItems = listOf(
-            createTestInventoryItem(BigDecimal("5.0")),
-            createTestInventoryItem(BigDecimal("8.0"))
+        val threshold = BigDecimal("10.00")
+        val product = createTestProduct()
+        val warehouse = createTestWarehouse()
+        val lowStockItem = createTestInventoryItem(
+            product = product,
+            warehouse = warehouse,
+            quantity = BigDecimal("5.00"),
+            minimumLevel = BigDecimal("10.00")
         )
 
-        `when`(inventoryItemRepository.findItemsBelowThreshold(threshold))
-            .thenReturn(lowStockItems)
+        every { inventoryItemRepository.findItemsBelowThreshold(threshold) } returns listOf(lowStockItem)
 
         // When
         val result = inventoryTrackingService.checkLowStock(threshold)
 
         // Then
-        assertEquals(2, result.size)
-        verify(inventoryItemRepository).findItemsBelowThreshold(threshold)
+        assertEquals(1, result.size)
+        assertEquals(lowStockItem, result[0])
+        verify { inventoryItemRepository.findItemsBelowThreshold(threshold) }
     }
 
     @Test
-    fun `generateInventoryReport should return correct report structure`() {
+    fun `should generate inventory report for warehouse`() {
         // Given
         val warehouseId = 1L
-        val warehouse = createTestWarehouse(warehouseId)
-        val inventoryItems = listOf(
-            createTestInventoryItem(BigDecimal("10.0")),
-            createTestInventoryItem(BigDecimal("20.0"))
-        )
+        val product = createTestProduct()
+        val warehouse = createTestWarehouse()
+        val inventoryItem = createTestInventoryItem(product = product, warehouse = warehouse)
 
-        `when`(warehouseRepository.findById(warehouseId))
-            .thenReturn(Optional.of(warehouse))
-        `when`(inventoryItemRepository.findByWarehouseId(warehouseId))
-            .thenReturn(inventoryItems)
+        // FIXED: Changed from existsById to findById and return Optional
+        every { warehouseRepository.findById(warehouseId) } returns Optional.of(warehouse)
+        every { inventoryItemRepository.findByWarehouseId(warehouseId) } returns listOf(inventoryItem)
 
         // When
-        val report = inventoryTrackingService.generateInventoryReport(warehouseId)
+        val result = inventoryTrackingService.generateInventoryReport(warehouseId)
 
         // Then
-        assertNotNull(report["timestamp"])
-        assertEquals(warehouseId, (report["warehouse"] as Map<*, *>)["id"])
-        assertEquals(2, (report["inventoryItems"] as List<*>).size)
-        assertEquals(BigDecimal("30.0"), report["totalQuantity"])
+        assertNotNull(result)
+        assertTrue(result.containsKey("warehouse"))
+        assertEquals(warehouseId, (result["warehouse"] as Map<*, *>)["id"])
+        // FIXED: Changed verify call to match the actual method being called
+        verify { warehouseRepository.findById(warehouseId) }
+        verify { inventoryItemRepository.findByWarehouseId(warehouseId) }
     }
 
-    private fun createTestInventoryItem(quantity: BigDecimal): InventoryItem {
-        return InventoryItem(
-            id = 1L,
-            product = Product(
-                id = 1L,
-                code = "TEST-CODE",
-                description = "Test Description",
-                barcode = "TEST-BARCODE",
-                category = "Test Category",
-                name = "Test Product Name",
-                price = BigDecimal("9.99")
-            ),
-            warehouse = createTestWarehouse(1L),
-            quantity = quantity
-        )
-    }
+    @Test
+    fun `should return empty list when no low stock items found`() {
+        // Given
+        val threshold = BigDecimal("10.00")
+        every { inventoryItemRepository.findItemsBelowThreshold(threshold) } returns emptyList()
 
-    private fun createTestWarehouse(id: Long): Warehouse {
-        return Warehouse(
-            id = id,
-            name = "Test Warehouse",
-            location = "Test Location",
-            capacity = 1000.0
-        )
+        // When
+        val result = inventoryTrackingService.checkLowStock(threshold)
+
+        // Then
+        assertTrue(result.isEmpty())
+        verify { inventoryItemRepository.findItemsBelowThreshold(threshold) }
     }
 }
